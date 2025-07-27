@@ -65,7 +65,6 @@ end
 # cache cleanup
 def remove_cache
     puts "Removing cache..."
-    Dir["*-decfirst.cia"].each do |fname| File.delete(fname) end
     Dir["*.ncch"].each do |fname| File.delete(fname) end
 end
 
@@ -120,7 +119,7 @@ Dir["*.cia"].each do |cia|
         puts "CIA Type: Game"
         run_tool("ctrdecrypt", [cia])
 
-        args = ["-f", "cia", "-ignoresign", "-target", "p", "-o", "#{cutn}-decfirst.cia"]
+        args = ["-f", "cia", "-ignoresign", "-target", "p", "-o", "#{cutn}-decrypted.cia"]
         i : UInt8 = 0
         Dir["*.ncch"].sort.each do |ncch|
             args += ["-i", "#{ncch}:#{i}:#{i}"]
@@ -153,8 +152,8 @@ Dir["*.cia"].each do |cia|
         puts "Unsupported CIA"
     end
 
-    Dir["*-decfirst.cia"].each do |decfirst|
-        cutn = decfirst.chomp "-decfirst.cia"
+    Dir["*-decrypted.cia"].each do |decfirst|
+        cutn = decfirst.chomp "-decrypted.cia"
     
         puts "Building decrypted #{cutn} CCI..."
         run_tool("makerom", ["-ciatocci", decfirst, "-o", "#{cutn}-decrypted.cci"])
